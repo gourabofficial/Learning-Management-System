@@ -17,6 +17,9 @@ export default {
         'auto': 'repeat(auto-fit, minmax(200px,1fr))'
         
       },
+      spacing: {
+        "section-height": "500px",
+      },
     },
   },
   plugins: [],
