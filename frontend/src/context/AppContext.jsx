@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { dummyCourses } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
+import humanizeDuration from 'humanize-duration'
 
 
 
@@ -26,13 +27,50 @@ export const AppContextProvider = (props) => {
       totalRating += rating.rating
     });
       return totalRating/course.courseRatings.length
-   }
+  }
+  
 
-
-// dumydata function
+  // dumydata function
   const feachAllCourse = async () => {
     setAllCourse(dummyCourses)
    }
+
+  // course chapter time
+  const calculateChapterTime = (chapter) => {
+    let time = 0;
+    chapter.chapterContent.forEach((lecture) => {
+      time += lecture.lectureDuration;
+    });
+    return humanizeDuration(time * 60 * 1000, { units: ['h', 'm'] });
+  }
+
+  // function to calclate course Duration 
+
+  const calculateCourseDuration = (course) => {
+    let time = 0;
+    course.courseContent.map((chapter) => chapter.courseContent.map((lecture) =>
+     time += lecture.lectureDuration
+      
+    ))
+    return humanizeDuration(time * 60 * 1000, { units: ['h', 'm'] })
+
+  }
+
+  // number of leacture function 
+
+  const calculateNumberOfLectures = (course) => {
+    let totalLectures = 0;
+    course.courseContent.forEach(chapter => {
+      if (Array.isArray(chapter.chapterContent)) {
+        totalLectures += chapter.chapterContent.length
+      }
+    });
+    return totalLectures;
+  }
+
+
+
+
 
   useEffect(() => {
     feachAllCourse()
@@ -41,7 +79,8 @@ export const AppContextProvider = (props) => {
   const value = {
     currency, allCourse,
     navigate, calculateRating,
-    isEducator,setIsEducator
+    isEducator, setIsEducator, calculateNumberOfLectures,
+    calculateCourseDuration,calculateChapterTime
   }
 
   return (
