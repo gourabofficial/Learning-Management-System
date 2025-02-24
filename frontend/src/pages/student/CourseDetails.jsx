@@ -4,11 +4,16 @@ import { AppContext } from "../../context/AppContext";
 import Loading from "../../components/student/Loading";
 import assets from "../../assets/assets";
 import humanizeDuration from "humanize-duration";
+import Footer from "../../components/student/Footer";
+import Youtube from 'react-youtube';
+
 
 const CourseDetail = () => {
   const { id } = useParams();
   const [courseData, setCourseData] = useState(null);
   const [openSectios, setopenSectios] = useState({});
+  const [isAlreadyEnrolled, setIsAlreadyEnrolled] = useState(false);
+  const [isPlayerData, setIsPlayerData] = useState(null);
 
   const {
     allCourse,
@@ -136,7 +141,13 @@ const CourseDetail = () => {
                             <p>{lecture.lectureTitle}</p>
                             <div className="flex  gap-2">
                               {lecture.isPreviewFree && (
-                                <p className="text-blue-500 cursor-pointer ">
+                                <p
+                                  onClick={() => setIsPlayerData(
+                                    {
+                                      videoId:lecture.lectureUrl.split('/').pop()
+                                    }
+                                  )}
+                                  className="text-blue-500 cursor-pointer ">
                                   Preview
                                 </p>
                               )}
@@ -173,14 +184,22 @@ const CourseDetail = () => {
           className="max-w-course-card z-10 shadow-custom-card rounded-t
         md:rounded-none overflow-hidden bg-white  min-w-[300px] sm:min-w-[420px]"
         >
-          <img src={courseData.courseThumbnail} alt="" />
+
+          {
+            isPlayerData ?
+            <Youtube videoId={isPlayerData.videoId} opts={{
+              playerVars: { autoplay: 1 }
+            }}  iframeClassName="w-full aspect-video"/>
+            :  <img src={courseData.courseThumbnail} alt="" />
+          }
+         
           <div className="p-5">
             <div className="flex items-center gap-2">
-              <img
-                className="w-3.5"
-                src={assets.time_left_clock_icon}
-                alt="time_left_clock_icon"
-              />
+
+            <img className="w-3.5" src={assets.time_left_clock_icon}  alt="time_left_clock_icon" />
+
+              
+             
               <p className="text-red-500">
                 {" "}
                 <span className="font-medium">4 days</span> left at this price
@@ -203,7 +222,7 @@ const CourseDetail = () => {
             </div>
 
             <div
-              className="flex items-center text-sm md:text-defaultgap-4 pt-2
+              className="flex items-center text-sm md:text-default gap-4 pt-2
             md:pt-4 text-gray-500"
             >
               <div className="flex items-center gap-1">
@@ -212,10 +231,39 @@ const CourseDetail = () => {
               </div >
 
               <div className=" h-4 w-px bg-gray-500/40"></div>
+
+              <div className="flex items-center gap-1">
+                <img src={assets.time_clock_icon} alt="time_clock_icon" />
+                <p>{calculateCourseDuration(courseData)}</p>
+              </div >
+
+              <div className=" h-4 w-px bg-gray-500/40"></div>
+
+              <div className="flex items-center gap-1">
+                <img src={assets.lesson_icon} alt="time_clock_icon" />
+                <p>{calculateNumberOfLectures(courseData)} lessons</p>
+              </div >
+
             </div>
+                {/* button  */}
+            <button className="md:mt-6 mt-4 w-full py-3 rounded-md bg-blue-600  text-medium text-white"
+            >{isAlreadyEnrolled ? "Already Enrolled" : "Enroll Now"}</button>
+
+            <div className="pt-6">
+              <p className="md:text-xl textt-lg font-medium text-gray-800"> Whats's in the course?</p>
+              <ul className="ml-4 pt-2 text-sm md:text-default list-disc text-gray-500">
+                <li>Lifetime update with free access.</li>
+                <li>Step-by-Step, hends on project guidence.</li>
+                <li>Downloadable the Resourses and Source code. </li>
+                <li>Test your Knowledge via Quize</li>
+                <li>Provide Certificate</li>
+              </ul>
+            </div>
+
           </div>
         </div>
       </div>
+      <Footer />
     </>
   ) : (
     <Loading />
