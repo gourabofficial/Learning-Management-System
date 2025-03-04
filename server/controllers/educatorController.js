@@ -2,6 +2,7 @@ import { clerkClient } from '@clerk/clerk-sdk-node';
 import Course from '../models/Course.js';
 import Purchase from '../models/Purchase.js';
 import cloudinary from 'cloudinary';
+import User from '../models/User.js'
 
 
 export const updateRoleToEducator = async (req, res) => {
@@ -90,9 +91,9 @@ export const educatorDashboarData = async (req, res) => {
 
     const enrolledStudentsData = [];
     for (const course of courses) {
-      const students = awaitUser.find({
+      const students = await User.find({
         _id: {$in: course.enrolledStudents}
-      }, 'name', 'imageUrl')
+      }, 'name imageUrl')
       
 
       students.forEach(student => {
@@ -128,7 +129,7 @@ export const getEnrolledStudentsData = async (req, res) => {
     const purchases = await Purchase.find({
       courseId: { $in: courseIds },
       status: 'completed',
-    }).populate('userId', 'name imageUrl').populate('courseId', 'courseTitle')
+    }).populate('userId', 'name  imageUrl').populate('courseId', 'courseTitle')
 
     const enrolledStudents = purchases.map(purchase => ({
       student: purchase.userId,

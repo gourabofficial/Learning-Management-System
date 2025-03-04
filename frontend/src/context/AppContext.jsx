@@ -129,7 +129,7 @@ export const AppContextProvider = (props) => {
       {headers:{Authorization: `Bearer ${token}`}})
    
     if (data.success) {
-      setEnrolledCourses(data.enrolledCourses); // add reverse()
+      setEnrolledCourses(data.enrolledCourses.reverse()); // add reverse()
     } else {
       toast.error(data.message)
       console.log(data.message);

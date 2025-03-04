@@ -27,19 +27,22 @@ const CourseDetail = () => {
   } = useContext(AppContext);
 
   const featchCourseData = async () => {
-   try {
-     const { data } = await axios.get(backendUrl + '/api/course/' + id);
-     
-     if (data.success) {
-       setCourseData(data.courseData);
-     } else {
-       toast.error(data.message)
-     }
-   } catch (error) {
-    toast.error(error.message)
-    
-   }
-  };
+    try {
+      const { data } = await axios.get(backendUrl + '/api/course/' + id);
+      
+      console.log("API Response:", data); // Check API response
+ 
+      if (data.success) {
+        console.log("Setting Course Data:", data.courseData); 
+        setCourseData(data.courseData);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+     toast.error(error.message);
+    }
+ };
+ 
 
   const enrollCourse = async () => {
     try {
@@ -96,9 +99,11 @@ const CourseDetail = () => {
           <p
             className="pt-4 ms:text-base text-sm"
             dangerouslySetInnerHTML={{
-              __html: courseData.courseDescription.slice(0, 200), // mistake
+              __html: courseData.courseDecription.slice(0, 200), // mistake
             }}
           ></p>
+
+
 
           {/* rating */}
           <div className="flex items-center space-x-2 pt-3 pb-1 text-sm">
@@ -217,7 +222,7 @@ const CourseDetail = () => {
             </h3>
             <p
               className="pt-3 rich-text"
-              dangerouslySetInnerHTML={{ __html: courseData.courseDescription }}
+              dangerouslySetInnerHTML={{ __html: courseData.courseDecription }}
             ></p>
           </div>
         </div>
