@@ -6,6 +6,8 @@ import assets from "../../assets/assets";
 import humanizeDuration from "humanize-duration";
 import Footer from "../../components/student/Footer";
 import Youtube from 'react-youtube';
+import { toast } from "react-toastify";
+import axios from "axios";
 
 
 const CourseDetail = () => {
@@ -21,17 +23,58 @@ const CourseDetail = () => {
     calculateNumberOfLectures,
     calculateCourseDuration,
     calculateChapterTime,
-    currency,
+    currency,backendUrl,userData,getToken
   } = useContext(AppContext);
 
   const featchCourseData = async () => {
-    const findCourse = allCourse.find((course) => course._id === id);
-    setCourseData(findCourse);
+   try {
+     const { data } = await axios.get(backendUrl + '/api/course/' + id);
+     
+     if (data.success) {
+       setCourseData(data.courseData);
+     } else {
+       toast.error(data.message)
+     }
+   } catch (error) {
+    toast.error(error.message)
+    
+   }
   };
+
+  const enrollCourse = async () => {
+    try {
+      if (!userData) {
+        return toast.warn("Login to Enroll")
+      }
+      if(isAlreadyEnrolled){
+        return toast.warn("You already enrolled")
+      }
+
+      const token = await getToken();
+      const { data } = await axios.post(backendUrl + '/api/user/purchase',
+        { courseId: courseData._id }, { headers: { Authorization: `Bearer ${token}` } })
+      
+      if (data.success) {
+        const { session_url } = data
+        window.location.replace(session_url)
+      } else {
+        toast.error(data.message)
+      }
+
+    } catch (error) {
+      toast.error(error.message)  
+    }
+  }
 
   useEffect(() => {
     featchCourseData();
-  }, [allCourse, id]);
+  }, []);
+  
+  useEffect(() => {
+    if (userData && courseData) {
+      setIsAlreadyEnrolled(userData.enrolledCourses.includes(courseData._id));
+    }
+  }, [userData,courseData]);
 
   const toggleSection = (index) => {
     setopenSectios((prev) => ({
@@ -53,7 +96,7 @@ const CourseDetail = () => {
           <p
             className="pt-4 ms:text-base text-sm"
             dangerouslySetInnerHTML={{
-              __html: courseData.courseDescription.slice(0, 200),
+              __html: courseData.courseDescription.slice(0, 200), // mistake
             }}
           ></p>
 
@@ -85,7 +128,7 @@ const CourseDetail = () => {
           </div>
           <p className="text-sm">
             Course by{" "}
-            <span className="text-blue-600 underline">Gourab Ganguly</span>
+            <span className="text-blue-600 underline">{ courseData.educator.name}</span>
           </p>
 
           <div className="pt-8 text-gray-800">
@@ -246,7 +289,7 @@ const CourseDetail = () => {
 
             </div>
                 {/* button  */}
-            <button className="md:mt-6 mt-4 w-full py-3 rounded-md bg-blue-600  text-medium text-white"
+            <button onClick={enrollCourse} className="md:mt-6 mt-4 w-full py-3 rounded-md bg-blue-600  text-medium text-white"
             >{isAlreadyEnrolled ? "Already Enrolled" : "Enroll Now"}</button>
 
             <div className="pt-6">
