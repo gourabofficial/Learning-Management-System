@@ -3,6 +3,9 @@ import User from '../models/User.js';
 import Stripe from "stripe";
 import Purchase from "../models/Purchase.js";
 import Course from "../models/Course.js";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export const clerkWebhook = async (req, res) => {
     try {
@@ -53,14 +56,12 @@ export const clerkWebhook = async (req, res) => {
     }
 }                      
 
-
 const stripeInstanse = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 
 export const stripeWebhook = async (request, response) => {
   const sig = request.headers['stripe-signature'];
   
-  console.log("Stripe Secret Key:", process.env.STRIPE_SECRET_KEY);
   let event;
 
   try {
@@ -124,4 +125,3 @@ export const stripeWebhook = async (request, response) => {
       // Return a response to acknowledge receipt of the event
       response.json({ received: true });
   }
-

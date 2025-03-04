@@ -8,7 +8,7 @@ import { clerkMiddleware } from '@clerk/express';
 import connectCloudinary from './configs/cloudinary.js';
 import courseRouter from './routes/courseRouts.js';
 import userRouter from './routes/userRoutes.js';
-import Stripe from "stripe";
+
 
 dotenv.config();
 
