@@ -7,7 +7,7 @@ const Footer = () => {
       <div className='flex flex-col md:flex-row items-start px-8 md:px-0 justify-center
       gap-10 md:gap-10 py-10 border-b border-white/30'>
         <div className='flex flex-col md:items-start items-center w-full'>
-          <img src={assets.logo_dark} alt="logo" />
+          <img className='w-32 h-32' src= "./logo_dark.svg"  alt="logo" />
           <p className='mt-6 text-center md:text-left text-sm text-white/80'>Empowering learners worldwide with
             quality education. </p>
         </div>
@@ -33,7 +33,7 @@ const Footer = () => {
           </div>
         </div>
       </div>
-      <p className='py-4 text-center text-xs md:text-sm text-white/60'>Copyright 2024 © CourseHub. All Right Reserved. </p>
+      <p className='py-4 text-center text-xs md:text-sm text-white/60'>Copyright {new Date().getFullYear()} © CourseHub. All Right Reserved. </p>
     </footer>
   )
 }

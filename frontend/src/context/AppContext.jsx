@@ -1,5 +1,5 @@
+
 import { createContext, useEffect, useState } from "react";
-import { dummyCourses } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
 import humanizeDuration from 'humanize-duration';
 import { useAuth, useUser } from '@clerk/clerk-react';
@@ -128,8 +128,7 @@ export const AppContextProvider = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       });
   
-      console.log("API Response:", data); 
-      console.log("Enrolled Courses from API:", data?.enrolledCourses); 
+      
   
       if (data.success && Array.isArray(data.enrolledCourses)) {  
         setEnrolledCourses(data.enrolledCourses);
@@ -142,12 +141,6 @@ export const AppContextProvider = (props) => {
     }
   };
   
-  
-  
-  
-  
-
-
 
 
   useEffect(() => {
