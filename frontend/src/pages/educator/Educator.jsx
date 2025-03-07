@@ -7,7 +7,7 @@ import Footer from '../../components/educator/Footer';
 const Educator = () => {
   const location = useLocation();
   
-  console.log("Educator Page Loaded"); // Debugging log
+  
 
   return (
     <div className='text-default min-h-screen bg-white'>
@@ -15,7 +15,7 @@ const Educator = () => {
       <div className='flex'>
         <Sidebar />
         <div className='flex-1 p-4'>
-          {/* Ensuring it redirects only if exactly on "/educator" */}
+
           {location.pathname === "/educator" && <Navigate to="/educator/dashbord" replace />}
           <Outlet />
         </div>

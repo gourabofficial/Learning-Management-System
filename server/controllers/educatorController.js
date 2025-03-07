@@ -12,18 +12,35 @@ export const approveEducator = async (req, res) => {
   try {
     const { userId } = req.body;
 
-    // Update user role to educator
+    
     await clerkClient.users.updateUserMetadata(userId, {
-      publicMetadata: {
-        role: 'educator',
-      }
+      publicMetadata: { role: "educator" },
     });
 
-    // Remove the request from pending requests
+   
     await PendingEducatorRequest.deleteOne({ userId });
 
-    res.json({ success: true, message: "Educator approved successfully.", role: "educator" });
+    res.json({ success: true, message: "Educator approved successfully!", role: "educator" });
 
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+
+// status checking:
+
+export const checkApprovalStatus = async (req, res) => {
+  try {
+    const { userId } = req.query;
+
+    const user = await clerkClient.users.getUser(userId);
+
+    if (user.publicMetadata.role === 'educator') {
+      res.json({ role: 'educator' });
+    } else {
+      res.json({ role: 'pending' });
+    }
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -33,8 +50,7 @@ export const approveEducator = async (req, res) => {
 
 
 
-
-// educatorController.js
+// updateRoleToEducator.js
 export const updateRoleToEducator = async (req, res) => {
   try {
     const userId = req.auth.userId;
@@ -42,10 +58,10 @@ export const updateRoleToEducator = async (req, res) => {
       return res.status(400).json({ success: false, message: "User ID is required" });
     }
 
-    // Update user metadata to indicate a request to become an educator
+  
     await clerkClient.users.updateUserMetadata(userId, {
       publicMetadata: {
-        role: 'pending_educator', // Set role to pending_educator
+        role: 'pending_educator',
       }
     });
 
@@ -59,30 +75,7 @@ export const updateRoleToEducator = async (req, res) => {
 
 
 
-
-// export const updateRoleToEducator = async (req, res) => {
-//   try {
-//     const userId = req.auth.userId;
-//     if (!userId) {
-//       return res.status(400).json({ success: false, message: "User ID is required" });
-//     }
-
-
-//     await clerkClient.users.updateUserMetadata(userId, {
-//       publicMetadata: {
-//         role: 'educator',
-//       }
-//     });
-
-//     res.json({ success: true, message: "You can publish your courses now!" });
-
-//   } catch (error) {
-//     res.status(500).json({ success: false, message: error.message });
-//     console.log(error.message);
-//   }
-// };
- 
-
+// addCourse.js
 
 
 export const addCourse = async (req,res) => {

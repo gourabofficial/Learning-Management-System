@@ -1,7 +1,22 @@
-import React from 'react'
+import React, { useEffect } from 'react';
 import { motion } from "framer-motion";
+import { useNavigate } from 'react-router-dom';
+import { useUser } from '@clerk/clerk-react';
+import { toast } from 'react-toastify';
 
 const EducatorRequest = () => {
+  const navigate = useNavigate();
+  const { user } = useUser();
+
+  //check the user role
+  useEffect(() => {
+    
+    if (user?.publicMetadata?.role === 'educator') {
+      toast.success("You have been approved as an educator!");
+      navigate("/educator"); 
+    }
+  }, [user, navigate]); 
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-cyan-100/70 to-blue-200 p-6">
       <motion.div
@@ -10,7 +25,7 @@ const EducatorRequest = () => {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
-        {/* Glowing Border Animation */}
+        
         <motion.div
           className="absolute inset-0 border-2 border-cyan-300 rounded-2xl opacity-30"
           animate={{ opacity: [0.3, 0.6, 0.3] }}
@@ -28,7 +43,7 @@ const EducatorRequest = () => {
           We are currently reviewing your request. You will be notified soon.
         </motion.p>
 
-        {/* Animated Loading Dots */}
+        
         <div className="mt-6 flex justify-center space-x-2">
           {[...Array(3)].map((_, i) => (
             <motion.div

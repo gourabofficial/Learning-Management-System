@@ -15,8 +15,8 @@ const Navbar = () => {
   const { isEducator } = useContext(AppContext);
 
   const becomeEducator = () => {
-    if (isEducator) {
-      toast.success("Navigating to Educator Dashboard");
+    if (user?.publicMetadata?.role === 'educator') {
+      
       navigate("/educator");
     } else {
       toast.success("After approval, you will be an Educator on CourseHub");
@@ -40,7 +40,7 @@ const Navbar = () => {
         {user && (
           <>
             <button onClick={becomeEducator}>
-              {isEducator ? "Educator Dashboard" : "Become an Educator"}
+              {user?.publicMetadata?.role === 'educator' ? "Educator Dashboard" : "Become an Educator"}
             </button>
             | <Link to="/my-enrollments">My Enrollments</Link>
           </>
@@ -63,7 +63,7 @@ const Navbar = () => {
         {user && (
           <>
             <button onClick={becomeEducator}>
-              {isEducator ? "Educator Dashboard" : "Become an Educator"}
+              {user?.publicMetadata?.role === 'educator' ? "Educator Dashboard" : "Become an Educator"}
             </button>
             | <Link to="/my-enrollments">My Enrollments</Link>
           </>
