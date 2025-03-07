@@ -5,30 +5,85 @@ import cloudinary from 'cloudinary';
 import User from '../models/User.js'
 
 
-export const updateRoleToEducator = async (req, res) => {
+
+// educatorController.js
+
+export const approveEducator = async (req, res) => {
   try {
-    const userId = req.auth.userId;
-    console.log(req.auth.userId)
-    if (!userId) {
-      return res.status(400).json({ success: false, message: "User ID is required" });
-    }
+    const { userId } = req.body;
 
-    console.log("User ID:", userId);
-
+    // Update user role to educator
     await clerkClient.users.updateUserMetadata(userId, {
       publicMetadata: {
         role: 'educator',
       }
     });
 
-    res.json({ success: true, message: "You can publish your courses now!" });
+    // Remove the request from pending requests
+    await PendingEducatorRequest.deleteOne({ userId });
+
+    res.json({ success: true, message: "Educator approved successfully.", role: "educator" });
+
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+
+
+
+
+
+// educatorController.js
+export const updateRoleToEducator = async (req, res) => {
+  try {
+    const userId = req.auth.userId;
+    if (!userId) {
+      return res.status(400).json({ success: false, message: "User ID is required" });
+    }
+
+    // Update user metadata to indicate a request to become an educator
+    await clerkClient.users.updateUserMetadata(userId, {
+      publicMetadata: {
+        role: 'pending_educator', // Set role to pending_educator
+      }
+    });
+
+    res.json({ success: true, message: "Your request to become an educator has been submitted. Waiting for approval." });
 
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
     console.log(error.message);
   }
 };
+
+
+
+
+// export const updateRoleToEducator = async (req, res) => {
+//   try {
+//     const userId = req.auth.userId;
+//     if (!userId) {
+//       return res.status(400).json({ success: false, message: "User ID is required" });
+//     }
+
+
+//     await clerkClient.users.updateUserMetadata(userId, {
+//       publicMetadata: {
+//         role: 'educator',
+//       }
+//     });
+
+//     res.json({ success: true, message: "You can publish your courses now!" });
+
+//   } catch (error) {
+//     res.status(500).json({ success: false, message: error.message });
+//     console.log(error.message);
+//   }
+// };
  
+
+
 
 export const addCourse = async (req,res) => {
   try {

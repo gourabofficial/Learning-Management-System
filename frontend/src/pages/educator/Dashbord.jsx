@@ -23,7 +23,7 @@ const Dashbord = () => {
         console.log(data.message);
       }
     } catch (error) {
-      toast.error(error.message);
+      toast.error("Something went wrong", "Please Wait until your Request is completed");
       console.log(error.message);
     }
   };

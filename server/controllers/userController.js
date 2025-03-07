@@ -60,7 +60,7 @@ export const purchaseCourse = async (req, res) => {
     let stripeInstanse;
     try {
       stripeInstanse = new Stripe(process.env.STRIPE_SECRET_KEY);
-      console.log("Stripe Secret Key is valid")
+     
     } catch (error) {
       console.log("Invalid Stripe Secret Key")
       
