@@ -21,7 +21,28 @@ await connectDB();
 await connectCloudinary();
 
  // Middlewares
-app.use(cors());
+const allowedOrigins = process.env.NODE_ENV === 'production' 
+    ? [process.env.FRONTEND_URL, 'http://localhost:5173', 'http://localhost:3000'] 
+    : ['http://localhost:5173', 'http://localhost:3000'];
+
+app.use(cors({
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps, Postman, etc.)
+        if (!origin) return callback(null, true);
+        
+        if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-clerk-auth-token'],
+    preflightContinue: false,
+    optionsSuccessStatus: 200
+}));
+app.use(express.json());
 app.use(clerkMiddleware());
 
 
@@ -29,10 +50,10 @@ app.use(clerkMiddleware());
 
 // Routes
 app.get('/', (req, res) => { res.send("Hare Krishna..")});
-app.post('/clerk', express.json(), clerkWebhook)
-app.use('/api/educator', express.json(), educatorRouter);
-app.use('/api/course', express.json(), courseRouter);
-app.use('/api/user', express.json(), userRouter);
+app.post('/clerk', clerkWebhook)
+app.use('/api/educator', educatorRouter);
+app.use('/api/course', courseRouter);
+app.use('/api/user', userRouter);
 app.post('/stripe', express.raw({ type: 'application/json' }), stripeWebhook);
 
 
