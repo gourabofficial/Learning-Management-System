@@ -1,8 +1,13 @@
-import { clerkClient } from '@clerk/clerk-sdk-node';
+import { createClerkClient } from '@clerk/express';
 import Course from '../models/Course.js';
 import Purchase from '../models/Purchase.js';
 import cloudinary from 'cloudinary';
 import User from '../models/User.js'
+
+// Initialize Clerk client
+const clerkClient = createClerkClient({
+  secretKey: process.env.CLERK_SECRET_KEY,
+});
 
 
 

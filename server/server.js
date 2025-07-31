@@ -17,8 +17,18 @@ const app = express();
 
 
 // Database Connection
-await connectDB();
-await connectCloudinary();
+try {
+  await Promise.race([
+    connectDB(),
+    new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Database connection timeout')), 8000)
+    )
+  ]);
+  await connectCloudinary();
+} catch (error) {
+  console.error('Failed to connect to services:', error);
+  process.exit(1);
+}
 
  // Middlewares
 const allowedOrigins = process.env.NODE_ENV === 'production' 

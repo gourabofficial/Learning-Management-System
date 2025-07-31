@@ -52,7 +52,8 @@ export const AppContextProvider = (props) => {
         toast.error(data.message)
       }
     } catch (error) {
-      toast.error(data.message)
+      console.error('Error fetching courses:', error);
+      toast.error(error.response?.data?.message || error.message || 'Failed to fetch courses')
       
     }
   }

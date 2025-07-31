@@ -4,14 +4,23 @@ import Course from "../models/Course.js";
 
 export const getAllCourse = async (req,res) => {
   try {
+    // Add timeout and optimize query
     const courses = await Course.find({
-      isPublished:true
-    }).select(["-courseContent", '-enrolledStudents']).populate
-      ({ path: 'educator' })
+      isPublished: true
+    })
+    .select(["-courseContent", '-enrolledStudents'])
+    .populate({
+      path: 'educator',
+      select: 'name email imageUrl' // Only select necessary fields
+    })
+    .lean() // Return plain JavaScript objects for better performance
+    .limit(100) // Limit results to prevent timeout
+    .exec();
     
     res.json({ success: true, courses });
   } catch (error) {
-    res.json({ success: false, message: error.message });
+    console.error('Error fetching courses:', error);
+    res.status(500).json({ success: false, message: error.message });
   }
 }
 
